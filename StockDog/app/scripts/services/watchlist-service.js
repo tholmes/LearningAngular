@@ -51,7 +51,7 @@ angular.module('stockDogApp')
       watchlist.id = Model.nextId++;
       Model.watchlists.push(watchlist);
       saveModel();
-    }
+    };
 
     // [6] Remove given watchlist from watchlists model
     this.remove = function (watchlist) {
@@ -59,7 +59,7 @@ angular.module('stockDogApp')
         return list.id === watchlist.id;
       });
       saveModel();
-    }
+    };
 
     // [7] Initialize Model for this singleton service
     var Model = loadModel();
