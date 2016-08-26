@@ -1,0 +1,61 @@
+<html ng-app="myApp">
+  <head>
+    <title>Bootstrap Modal</title>
+
+    <link rel="stylesheet" href="bootstrap.css">
+
+    <script type="text/javascript"
+            src="jquery-1.11.1.js">
+    </script>
+    <script type="text/javascript"
+            src="bootstrap.js">
+    </script>
+    <script type="text/javascript"
+            src="angular.js">
+    </script>
+    <script type="text/javascript" src="moment.js">
+    </script>
+    <script type="text/javascript" src="moment-timezone.js">
+    </script>
+
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+
+        app.controller('ConcertsController', function($scope) {
+            $scope.concerts = [
+                {
+                    // GMT +1 => 9pm
+                    when: '2014-06-01T20:00:00.000Z',
+                    where: 'Europe/London'
+                },
+                {
+                    // GMT +2 => 6pm
+                    when: '2014-06-04T16:00:00.000Z',
+                    where: 'Europe/Oslo'
+                },
+                {
+                    // GMT +4 => 11pm
+                    when: '2014-06-22T19:00:00.000Z',
+                    where: 'Europe/Moscow'
+                }
+            ];
+        });
+
+        app.filter('moment', function() {
+            return function(input) {
+                return moment(input);
+            };
+        });
+    </script>
+  </head>
+  <body>
+    <div ng-controller="ConcertsController">
+        <div ng-repeat="concert in concerts">
+            Concert #{{$index + 1}}:
+            {{(concert.when | moment).
+                tz(concert.where).
+                format('MMMM D, YYYY h:mma')}}
+        </div>
+    </div>
+  </body>
+</html>

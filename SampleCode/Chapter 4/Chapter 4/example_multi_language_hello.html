@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Multi-language Hello</title>
+    <script src="angular.js">
+    </script>
+    <script type="application/javascript">
+        angular.
+            module('MyApp', []);
+    </script>
+</head>
+
+<body>
+    <div ng-controller="HelloController">
+        English:
+        <input type="text" id="username" ng-model="username">
+        <div>
+            Hello,
+            <span id="display_username">
+                {{ username }}
+            </span>
+        </div>
+    </div>
+
+    <div ng-controller="HelloController">
+        Spanish:
+        <input type="text" id="username" ng-model="username">
+        <div>
+            Hola,
+            <span id="display_username">
+                {{ username }}
+            </span>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function HelloController($scope) {
+            $scope.username = "";
+        }
+    </script>
+</body>
+
+</html>

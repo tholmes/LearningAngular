@@ -1,0 +1,30 @@
+{
+  "name": "Chapter3",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "connect": "^2.19.4",
+    "connect-livereload": "^0.4.0",
+    "grunt": "~0.4.4",
+    "grunt-contrib-connect": "~0.7.1",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-less": "~0.11.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "gulp": "^3.7.0",
+    "gulp-jshint": "^1.6.2",
+    "gulp-less": "^1.2.3",
+    "gulp-livereload": "^2.1.0",
+    "gulp-load-plugins": "^0.5.1",
+    "jshint-stylish": "^0.2.0",
+    "load-grunt-tasks": "~0.4.0",
+    "nopt": "^3.0.1",
+    "opn": "^0.1.2",
+    "q": "^1.0.1"
+  }
+}

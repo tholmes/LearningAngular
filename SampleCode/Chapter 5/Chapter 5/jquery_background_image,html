@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your first directive</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script type="application/javascript">
+        $(document).ready(function() {
+            $('div[my-background-image]').each(function(i, el) {
+                $(el).css({
+                'background-image': 'url(' + $(el).attr('my-background-image') +')',
+                'background-size' : 'cover',
+                'background-repeat' : 'no-repeat',
+                'background-position' : 'center center'
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div my-background-image="http://angularjs.org/img/AngularJS-large.png" style="width: 350px; height: 100px"></div>
+</body>
+
+</html>
+=

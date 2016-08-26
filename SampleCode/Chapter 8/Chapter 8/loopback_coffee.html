@@ -1,0 +1,51 @@
+<html ng-app="myApp">
+  <head>
+    <script type="text/javascript"
+            src="//code.angularjs.org/1.2.16/angular.js">
+    </script>
+    <script type="text/javascript"
+            src="//code.angularjs.org/1.2.16/angular-resource.js">
+    </script>
+    <script type="text/javascript"
+            src="js/services.js">
+    </script>
+    <script type="text/javascript">
+      angular.module('myApp', ['lbServices']);
+
+      function TestController($scope, CoffeeShop) {
+        $scope.newShop = new CoffeeShop();
+        $scope.allShops = CoffeeShop.find();
+        $scope.CoffeeShop = CoffeeShop;
+
+        $scope.reset = function() {
+          $scope.newShop = new CoffeeShop();
+        };
+      }
+    </script>
+  </head>
+
+  <body>
+    <div ng-controller="TestController">
+      <h1>Create New Shop</h1>
+      <input type="text" ng-model="newShop.name" placeholder="name">
+      <br>
+      <input  type="text"
+              ng-model="newShop.address"
+              placeholder="address">
+      <br>
+      <button ng-click="allShops.push(newShop); newShop.$create(); reset();">
+        Save
+      </button>
+      <hr>
+      <h1>Existing Shops</h1>
+      <button ng-click="allShops = CoffeeShop.find()">
+        Reload
+      </button>
+      <ul>
+        <li ng-repeat="shop in allShops">
+          {{shop.name}} ({{shop.address}})
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+<html ng-app="domTest">
+    <head>
+        <script type="text/javascript" src="/angular.js"></script>
+        <script type="text/javascript" src="/angular-mocks.js"></script>
+        <script type="text/javascript" src="/debug.js"></script>
+        <script type="text/javascript">
+            debug.enable('global');
+            var g = debug('global');
+            g('started executing global scope');
+
+            var parseQueryString = function(queryString) {
+                var params = {};
+                pairs = queryString.split("&");
+ 
+                for (var i = 0; i < pairs.length; ++i) {
+                    var pair = pairs[i].split('=');
+                    params[pair[0]] = decodeURIComponent(pair[1]);
+                }
+ 
+                return params;
+            };
+
+            var app = angular.module('domTest', ['ngMockE2E']);
+
+            app.config(function($provide) {
+                $provide.decorator('$httpBackend',
+                    angular.mock.e2e.$httpBackendDecorator);
+            });
+
+            // define our fake backend
+            app.run(function($httpBackend, $window) {
+                g('app.run()');
+                if ($window.location.href.indexOf('?') != -1) {
+                    var index = $window.location.href.indexOf('?');
+                    var queryParams = parseQueryString($window.location.href.substr(index + 1));
+                    var code = parseInt(queryParams.code || '200', 10);
+                    var result = JSON.parse(queryParams.response || '{}');
+                    $httpBackend.when('PUT', '/api/submit').respond(code, result);
+
+                    $window.query = queryParams;
+                    return;
+                }
+                $window.query = {};
+                $httpBackend.when('PUT', '/api/submit').respond(200, {});
+            });
+        </script>
+        <script type="text/javascript" src="/my_form_controller.debug.js"></script>
+    </head>
+    <body ng-controller="MyFormController">
+        <h1>This is a Form</h1>
+        <hr>
+        <h2>Name</h2>
+        <input  type="text"
+                ng-model="userData.name">
+        <h2>Email</h2>
+        <input  type="text"
+                ng-model="userData.email">
+        <hr>
+        <input  type="submit"
+                value="Save"
+                ng-click="validateForm().length === 0 && saveForm()">
+        <h2 ng-show="saving" id="saving">Saving...</h2>
+        <h2 ng-show="success" id="saved">Saved!</h2>
+        <h2 ng-show="error" id="server-error">Server Error: {{ error.error }}</h2>
+        <div ng-show="errorMessages.length > 0" id="errors">
+            <h3>Errors occurred:</h3>
+            <div ng-repeat="message in errorMessages" class="error-message">
+                {{ message }}
+            </div>
+        </div>
+    </body>
+</html>

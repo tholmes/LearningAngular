@@ -1,0 +1,31 @@
+<html ng-app="myApp">
+  <script type="text/javascript" src="angular.js">
+  </script>
+
+  <script type="text/javascript">
+    var m = angular.module('myApp', []);
+
+    m.config(function($httpProvider) {
+      $httpProvider.interceptors.push(function() {
+        return {
+          response: function(response) {
+            response.data.status = response.status;
+            console.log(JSON.stringify(response, null, '  '));
+            return response;
+          }
+        }
+      });
+    });
+
+    m.controller('httpController', function($scope, $http) {
+      $http.get('/sample.json').success(function(data) {
+        console.log(JSON.stringify(data));
+        $scope.data = data;
+      });
+    });
+  </script>
+
+  <body ng-controller="httpController">
+    <h1>Response Status: {{data.status}}</h1>
+  </body>
+</html>

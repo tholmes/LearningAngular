@@ -1,0 +1,15 @@
+{
+  "name": "chapter-8",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {},
+  "dependencies": {
+    "express": "4.8.5",
+    "body-parser": "1.11.0",
+    "node-static": "0.7.3",
+    "socket.io": "1.3.3",
+    "underscore": "1.5.2"
+  },
+  "author": "Valeri Karpov"
+}

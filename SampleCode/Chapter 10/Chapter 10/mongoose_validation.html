@@ -1,0 +1,89 @@
+<html ng-app="myApp">
+  <head>
+    <script type="text/javascript" src="mongoose.js">
+    </script>
+    <script type="text/javascript"
+            src="angular.js">
+    </script>
+    <script type="text/javascript">
+      var schema = new mongoose.Schema({
+        name: {
+          first: { type: String, default: '' },
+          last: { type: String, default: '' }
+        },
+        quest: {
+          type: String,
+          match: /Holy Grail/i,
+          required: true
+        },
+        favoriteColor: {
+          type: String,
+          enum: ['Red', 'Green', 'Blue'],
+          required: true
+        }
+      });
+
+      schema.
+        virtual('fullName').
+        get(function() {
+          return this.name.first + (this.name.last ? ' ' + this.name.last : '');
+        }).
+        set(function(v) {
+          var sp = v.indexOf(' ');
+          if (sp === -1) {
+            this.name.first = v;
+            this.name.last = '';
+          } else {
+            this.name.first = v.substring(0, sp);
+            this.name.last = v.substring(sp + 1);
+          }
+        });
+
+      var app = angular.module('myApp', []);
+
+      app.controller('MyController', function($scope) {
+        $scope.doc = new mongoose.Document({}, schema);
+        $scope.validating = false;
+        $scope.err;
+        $scope.validate = function() {
+          $scope.validating = true;
+          $scope.doc.validate(function(err) {
+            $scope.validating = false;
+            $scope.err = err;
+            $scope.$apply();
+          });
+        };
+      });
+    </script>
+  </head>
+
+  <body ng-controller="MyController">
+    <h1>My Form</h1>
+    <form ng-submit="validate()">
+      <h3>What is your name?</h3>
+      <input type="text" ng-model="doc.fullName" placeholder="Full Name">
+      <div>
+        <em>First: {{doc.name.first}}</em>
+      </div>
+      <div>
+        <em>Last: {{doc.name.last}}</em>
+      </div>
+      <h3>What is your quest?</h3>
+      <input type="text" ng-model="doc.quest">
+      <h3>What is your favorite color?</h3>
+      <input type="text" ng-model="doc.favoriteColor">
+      <hr>
+      <input type="submit" value="Validate">
+      <br><br>
+      <div ng-show="!validating && !!err">
+        <div ng-repeat="(key, err) in err.errors">
+          <b>Error validating path {{key}}:</b>
+          &nbsp;{{err.message}}
+        </div>
+      </div>
+      <div ng-show="!validation && !err">
+        <h2>No Errors</h2>
+      </div>
+    </form>
+  </body>
+</html>

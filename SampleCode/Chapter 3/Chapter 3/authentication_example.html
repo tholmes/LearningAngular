@@ -1,0 +1,72 @@
+<html ng-app="app">
+  <head>
+    <title></title>
+  </head>
+
+  <body ng-controller="AppController">
+    <div ng-show="user.loggedIn">
+      <h1>{{user.name}}</h1>
+      <input  type="button"
+              ng-click="user.logout()"
+              value="Log Out">
+    </div>
+    <div ng-show="!user.loggedIn">
+      <login></login>
+    </div>
+
+    <script type="text/javascript" src="angular.js">
+    </script>
+    <script type="text/javascript">
+      var app = angular.module('app', []);
+
+      app.factory('userService', function($timeout) {
+        var user = {
+          loggedIn: false
+        };
+
+        user.loadFromServer = function() {
+          $timeout(function() {
+            user.loggedIn = true;
+            user.name = 'Username';
+          }, 500);
+        };
+
+        user.login = function(username, password) {
+          $timeout(function() {
+            user.loggedIn = true;
+            user.name = username;
+          }, 500);
+        };
+
+        user.logout = function() {
+          user.loggedIn = false;
+          user.name = undefined;
+        };
+
+        user.loadFromServer();
+        return user;
+      });
+
+      app.controller('AppController', function($scope, userService) {
+        $scope.user = userService;
+      });
+
+      app.directive('login', function() {
+        return {
+          restrict: 'E',
+          scope: true,
+          template: 'Username: <input type="text" ng-model="username">' +
+            '<br>' +
+            'Password: <input type="password" ng-model="password">' +
+            '<br>' +
+            '<input type="button" ng-click="login()" value="Log In">',
+          controller: function($scope, userService) {
+            $scope.login = function() {
+              userService.login($scope.username, $scope.password);
+            };
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

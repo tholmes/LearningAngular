@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Hardcoding Array Order With Filters</title>
+    <script src="angular.js">
+    </script>
+    <script type="application/javascript">
+        var module = angular.
+            module('MyApp', []);
+    </script>
+</head>
+
+<body>
+    <div ng-controller="CountriesController">
+        <select ng-options="country.name for country in countries | orderBy:'name' | hardcodeFirst:'name':'USA'" ng-model="country">
+        </select>
+        <br>
+        {{ country.name }}
+    </div>
+
+    <script type="text/javascript">
+        function CountriesController($scope) {
+            $scope.countries = [
+                { name : "Germany" },
+                { name : "Australia" },
+                { name : "Norway" },
+                { name : "USA" },
+                { name : "Sweden" },
+                { name : "Austria" }
+            ];
+        }
+
+        module.filter('hardcodeFirst', function() {
+            return function(arr, field, val) {
+                var first = null;
+                for (var i = 0; i < arr.length; ++i) {
+                    if (arr[i][field] == val) {
+                        first = i;
+                        break;
+                    }
+                }
+         
+                if (!first) {
+                    return arr;
+                }
+         
+                var firstEl = arr[first];
+                arr.splice(first, 0);
+                arr.unshift(firstEl);
+         
+                return arr;
+            };
+        });
+    </script>
+</body>
+
+</html>

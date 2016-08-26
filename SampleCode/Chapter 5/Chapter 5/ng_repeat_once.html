@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Swipe Carousel</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script src="hammer.1.0.10.js">
+    </script>
+    <script src="jquery.hammer.1.0.10.js">
+    </script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js">
+    </script>
+    <script type="application/javascript">
+        var module = angular.
+            module('MyApp', []);
+
+        var ANGULARJS_LOGO_URL = "http://upload.wikimedia.org/wikipedia/commons/c/ca/AngularJS_logo.svg";
+        var GOOGLE_LOGO_URL = "http://upload.wikimedia.org/wikipedia/commons/a/aa/Logo_Google_2013_Official.svg";
+        var JQUERY_LOGO_URL = "http://upload.wikimedia.org/wikipedia/en/9/9e/JQuery_logo.svg";
+
+        module.directive('ngRepeatOnce', function() {
+            return {
+                restrict: 'A',
+                transclude: 'element',
+                compile: function(originalEl, attributes, transcludeFn) {
+                    return function(scope, element, attributes) {
+                        var loop = attributes.ngRepeatOnce.split(' in ');
+
+                        var elementScopeName = loop[0];
+                        var arr = scope.$eval(loop[1]);
+
+                        for (var i = 0; i < arr.length; ++i) {
+                            var childScope = scope.$new();
+                            childScope['$index'] = i;
+                            childScope[elementScopeName] = arr[i];
+
+                            transcludeFn(childScope, function(clone) {
+                                originalEl.parent().append(clone);
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
+        function BodyController($scope, $window) {
+            $scope.defaultImages = [
+                ANGULARJS_LOGO_URL,
+                GOOGLE_LOGO_URL,
+                JQUERY_LOGO_URL
+            ];
+
+            $scope.otherImages = [
+                GOOGLE_LOGO_URL
+            ];
+
+            $scope.window = $window;
+        }
+    </script>
+</head>
+
+<body ng-controller="BodyController">
+    <div ng-repeat-once="el in defaultImages">
+        {{ $index + 1 }}. {{ el }}
+    </div>
+</body>
+
+</html>

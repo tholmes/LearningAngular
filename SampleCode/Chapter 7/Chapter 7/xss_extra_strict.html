@@ -1,0 +1,31 @@
+<html ng-app="myModule">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="MyController">
+      <a ng-href="{{goodLink}}">Google!</a>
+      <hr>
+      <a ng-href="{{okLink}}">Not Google</a>
+      <hr>
+      <a ng-href="{{hackerLink}}">XSS Link</a>
+    </div>
+
+    <script type="text/javascript" src="angular.js"></script>
+    <script type="text/javascript">
+      var myModule = angular.module('myModule', []);
+
+      myModule.config(function($compileProvider) {
+        console.log($compileProvider.aHrefSanitizationWhitelist());
+        $compileProvider.aHrefSanitizationWhitelist(/^https?:\/\/(www\.)?google\.com(\/.*)?/i);
+      });
+
+      function MyController($scope, $http) {
+        $scope.goodLink = 'http://www.google.com';
+        $scope.okLink = 'http://www.notgoogle.com';
+        $scope.hackerLink = 'javascript:window.alert(\'You just got hacked!\')';
+      }
+    </script>
+  </body>
+</html>

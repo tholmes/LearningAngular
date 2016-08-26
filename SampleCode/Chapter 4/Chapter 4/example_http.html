@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+    <title>Custom HTTP Example</title>
+    <script src="jquery.js">
+    </script>
+    <script src="angular.js">
+    </script>
+</head>
+
+<body>
+    <div ng-controller="HttpController">
+        <input type="submit" value="Stuck? Click Here!" ng-click="">
+        <br>
+        {{ weather }}
+    </div>
+    <script type="text/javascript">
+        function HttpController($scope) {
+            var weatherUrl =
+                "http://api.openweathermap.org/data/2.5/weather" +
+                "?q=NewYork,NY";
+            $scope.weather = "Loading...";
+
+            $scope.getNYCWeather = function() {
+                $.get(weatherUrl, function(data) {
+                    $scope.weather = data;
+                    //$scope.$apply();
+                });
+            }
+
+            setTimeout(function() {
+                $scope.getNYCWeather();
+            }, 0);
+        }
+    </script>
+</body>
+
+</html>

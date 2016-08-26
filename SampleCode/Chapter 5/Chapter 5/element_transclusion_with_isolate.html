@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Transclusion With Isolate Scope Example</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js">
+    </script>
+    <script type="application/javascript">
+        var module = angular.
+            module('MyApp', []);
+
+        module.directive('ngGreeting', function() {
+            return {
+                restrict: 'E',
+                transclude: 'element',
+                replace: true,
+                scope: {},
+                template:
+                    '<div><h1 ng-transclude></h1></div>',
+                link: function(scope) {
+                    scope.lastName = 'Karpov';
+                }
+            };
+        });
+    </script>
+</head>
+
+<body ng-init="myName = 'Val';">
+    <ng-greeting>
+        Hi, my name is {{ myName }}
+    </ng-greeting>
+</body>
+
+</html>

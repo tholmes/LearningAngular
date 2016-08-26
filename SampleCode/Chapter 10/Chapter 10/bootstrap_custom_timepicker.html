@@ -1,0 +1,86 @@
+<html ng-app="myApp">
+  <head>
+    <title>Bootstrap Modal</title>
+
+    <link rel="stylesheet" href="bootstrap.css">
+
+    <script type="text/javascript"
+            src="jquery-1.11.1.js">
+    </script>
+    <script type="text/javascript"
+            src="bootstrap.js">
+    </script>
+    <script type="text/javascript"
+            src="angular.js">
+    </script>
+    <script type="text/javascript"
+            src="ui-bootstrap-tpls-0.11.2.js">
+    </script>
+
+    <script type="text/javascript">
+        // Need to add a dependency on the 'ui.bootstrap' module to use
+        // Angular-UI Bootstrap
+        var app = angular.module('myApp', ['ui.bootstrap']);
+
+        app.controller('MyDateController', function($scope) {
+            $scope.date = new Date();
+            $scope.date.setSeconds(0);
+        });
+
+        app.filter('timepickerOptions', function() {
+            var timepickerOptions = [];
+            for (var h = 0; h < 24; ++h) {
+                timepickerOptions.push({
+                    display: h + ':' + '00',
+                    value: {
+                        hours: h,
+                        minutes: 0
+                    }
+                });
+                timepickerOptions.push({
+                    display: h + ':' + '30',
+                    value: {
+                        hours: h,
+                        minutes: 30
+                    }
+                });
+            }
+
+            return function() {
+                return timepickerOptions;
+            }
+        });
+    </script>
+
+    <script id="template/timepicker/timepicker.html"
+            type="text/ng-template">
+        <div ng-init="showMeridian = false;">
+            <select ng-model="myTime"
+                    ng-change="hours = myTime.hours; updateHours(); minutes = myTime.minutes; updateMinutes()"
+                    ng-options="t.value as t.display for t in 0 | timepickerOptions">
+            </select>
+        </div>
+    </script>
+  </head>
+  <body>
+    <div ng-controller="MyDateController">
+        <h2>Date</h2>
+        <div style="width: 300px">
+            <input  type="text"
+                    class="form-control"
+                    datepicker-popup="yyyy/MM/dd"
+                    ng-disabled="isOpen"
+                    ng-model="date"
+                    is-open="isOpen"
+                    ng-click="isOpen = true" />
+        </div>
+        <h2>Time</h2>
+        <timepicker ng-model="date">
+        </timepicker>
+        <hr>
+        <h2>
+            Currently Selected Date: {{date | date:'medium'}}
+        </h2>
+    </div>
+  </body>
+</html>

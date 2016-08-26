@@ -1,0 +1,120 @@
+<html ng-app="myApp">
+  <head>
+    <title>Bootstrap Modal</title>
+
+    <link rel="stylesheet" href="bootstrap.css">
+
+    <script type="text/javascript"
+            src="jquery-1.11.1.js">
+    </script>
+    <script type="text/javascript"
+            src="bootstrap.js">
+    </script>
+    <script type="text/javascript"
+            src="angular.js">
+    </script>
+    <script type="text/javascript"
+            src="ui-bootstrap-tpls-0.11.2.js">
+    </script>
+
+    <script type="text/javascript">
+        // Need to add a dependency on the 'ui.bootstrap' module to use
+        // Angular-UI Bootstrap
+        var app = angular.module('myApp', ['ui.bootstrap']);
+
+        var confirmationTemplate =
+            "<h3>" +
+            "  Are you sure you want to learn about" +
+            "  Angular-UI Bootstrap modals?" +
+            "</h3>" +
+            "<hr>" +
+            "<button class='btn' type='submit' ng-click='confirm(true)'>" +
+            "  Yes" +
+            "</button>" +
+            "<button class='btn' type='submit' ng-click='confirm(false)'>" +
+            "  No" +
+            "</button>";
+
+        app.controller('MyController', function($scope, $modal) {
+            $scope.confirmed;
+            $scope.modal;
+            $scope.confirm = function(confirmed) {
+                $scope.confirmed = confirmed;
+                $scope.modal.close();
+            };
+
+            $scope.showConfirmation = function() {
+                $scope.modal = $modal.
+                    open({
+                        scope: $scope,
+                        template: confirmationTemplate
+                    });
+            };
+
+            $scope.favoriteChapter;
+            $scope.showSelectModal = function() {
+                $scope.modal = $modal.
+                    open({
+                        scope: $scope,
+                        template: selectModalTemplate,
+                        controller: 'SelectModalController'
+                    });
+            };
+
+            $scope.setFavoriteChapter = function(chapter) {
+                $scope.favoriteChapter = chapter;
+            };
+        });
+
+        var selectModalTemplate =
+            "<h2>What's your favorite chapter?</h2>" +
+            "<select ng-model='selectedOption'" +
+            "        ng-options='x for x in options'>" +
+            "</select>" +
+            "<hr>" +
+            "<button class='btn' ng-click='select()'>" +
+            "  Submit" +
+            "</button>";
+
+        app.controller('SelectModalController',
+            function($scope, $modalInstance) {
+                $scope.options = [];
+                $scope.selectedOption;
+                for (var i = 1; i <= 10; ++i) {
+                    $scope.options.push('Chapter ' + i);
+                }
+
+                $scope.select = function() {
+                    $scope.setFavoriteChapter($scope.selectedOption);
+                    $modalInstance.close();
+                };
+            });
+    </script>
+  </head>
+  <body>
+    <div ng-controller="MyController">
+        <button type="submit"
+                class="btn"
+                ng-click="showConfirmation()">
+            Show Confirmation Modal
+        </button>
+        <h2 ng-if="confirmed === true">
+            Confirmed
+        </h2>
+        <h2 ng-if="confirmed === false">
+            Denied
+        </h2>
+    </div>
+    <hr>
+    <div ng-controller="MyController">
+        <button type="submit"
+                class="btn"
+                ng-click="showSelectModal()">
+            Show Select Modal
+        </button>
+        <h2 ng-if="!!favoriteChapter">
+            Your Favorite Chapter is {{favoriteChapter}}
+        </h2>
+    </div>
+  </body>
+</html>

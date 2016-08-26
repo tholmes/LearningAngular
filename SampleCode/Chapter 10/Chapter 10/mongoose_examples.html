@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <script type="text/javascript" src="mongoose.js">
+    </script>
+    <script type="text/javascript">
+      // Create a new Mongoose schema
+      var schema = new mongoose.Schema({
+        name: {
+          first: String,
+          last: String
+        },
+        email: {
+          type: String,
+          // Email needs to match given RegExp
+          match: /.+@.+\..+/,
+          // Email must be specified
+          required: true
+        },
+        favoriteColor: {
+          type: String,
+          // Favorite color needs to be one of the enumerated
+          // values
+          enum: ['Red', 'Green', 'Blue']
+        },
+        age: {
+          type: Number,
+          // Age must be at least 21
+          min: 21
+        }
+      });
+
+      // Create a new empty document with schema
+      var doc1 = new mongoose.Document({}, schema);
+
+      doc1.validate(function(err) {
+        // 'ValidatorError: Path `email is required`'
+        console.log(err.errors['email']);
+      });
+
+      doc1.name = {
+        first: 'James',
+        last: 'Madison'
+      };
+
+      // 'James Madison'
+      console.log(doc1.fullName);
+
+      doc1.fullName = 'Thomas Jefferson';
+      // 'Thomas'
+      console.log(doc1.name.first);
+
+      var doc2 = new mongoose.Document({}, schema);
+      doc2.email = 'a@b.c';
+      doc2.age = 20;
+      doc2.validate(function(err) {
+        // 'ValidatorError: Path `age` (20) is less than minimum
+        // allowed value (21)'
+        console.log(err.errors['age']);
+      });
+
+      // Safe navigation
+      console.log(doc2.name.first); // Undefined
+    </script>
+  </head>
+</html>

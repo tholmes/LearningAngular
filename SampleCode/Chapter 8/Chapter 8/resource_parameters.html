@@ -1,0 +1,41 @@
+<html ng-app="myApp">
+  <script type="text/javascript" src="angular.js">
+  </script>
+  <script type="text/javascript" src="angular-resource.js">
+  </script>
+
+  <script type="text/javascript">
+    var m = angular.module('myApp', ['ngResource']);
+
+    m.service('tweetService', function($resource) {
+      var count = 0;
+      return $resource('/tweets/:id',
+        {
+          id: function() {
+            return ++count;
+          }
+        },
+        {
+          send: {
+            method: 'POST',
+            url: '/tweets/:id/send',
+            params: {
+              counter: function() {
+                return count;
+              }
+            }
+          }
+        });
+    });
+
+    m.controller('tweetController', function(tweetService) {
+      // This performs an HTTP request: POST /tweets/1/send?counter=1
+      var tweet = tweetService.send(function() {
+        console.log(JSON.stringify(tweet));
+      });
+    });
+  </script>
+
+  <body ng-controller="tweetController">
+  </body>
+</html>

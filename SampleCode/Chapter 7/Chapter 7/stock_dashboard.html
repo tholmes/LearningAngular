@@ -1,0 +1,90 @@
+<html ng-app="chapter7Module">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="ModifyStockListController">
+      <h1>Add new stock:</h1>
+      <input type="text" ng-model="newStock">
+      <input type="submit" ng-click="addToStockList(newStock); newStock = '';">
+    </div>
+    <div ng-controller="DisplayPricesController">
+      <h1>My Stock Prices</h1>
+      <em ng-show="stockPrices.loading">
+        Loading...
+      </em>
+      <div ng-repeat="quote in stockPrices.quotes">
+        {{quote.Symbol}}: {{quote.Ask}}
+      </div>
+    </div>
+
+    <script type="text/javascript" src="angular.js"></script>
+    <script type="text/javascript">
+      var chapter7Module = angular.module('chapter7Module', []);
+      
+      chapter7Module.factory('$user', function() {
+        var user = {
+          data: {
+            stocks: ['GOOG', 'YHOO']
+          }
+        };
+
+        user.load = function() {
+          // Stub for server call
+        };
+
+        user.save = function(callback) {
+          // Stub for server call;
+        };
+
+        user.load();
+        return user;
+      });
+
+      chapter7Module.factory('$stockPrices', function($http, $user, $interval) {
+        var service = {
+          quotes: []
+        };
+        var BASE = 'http://query.yahooapis.com/v1/public/yql';
+
+        service.loading = false;
+        service.load = function() {
+          service.loading = true;
+          var query = encodeURIComponent('select * from yahoo.finance.quotes where symbol in (\'' + $user.data.stocks.join(',') + '\')');
+          var url = BASE + '?' + 'q=' + query + '&format=json&diagnostics=true&env=http://datatables.org/alltables.env';
+
+          $http.jsonp(url + '&callback=JSON_CALLBACK').
+            success(function(data) {
+              service.loading = false;
+              if (data.query.count) {
+                var quotes = data.query.count > 1 ?
+                  data.query.results.quote :
+                  [data.query.results.quote];
+                service.quotes = quotes;
+              }
+            }).
+            error(function(data) {
+              console.log(data);
+            });
+        };
+        
+        service.load();
+        $interval(service.load, 5000);
+        return service;
+      });
+
+      function ModifyStockListController($scope, $user, $stockPrices) {
+        $scope.addToStockList = function(stock) {
+          $user.data.stocks.push(stock);
+          $user.save();
+          $stockPrices.load();
+        }
+      }
+
+      function DisplayPricesController($scope, $stockPrices) {
+        $scope.stockPrices = $stockPrices;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<html ng-app="MyModule">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="BrowserifyController">
+      <h1 ng-click="emitter.emit('ping')">
+        You've Clicked This {{numPings}} Times
+      </h1>
+    </div>
+
+    <script type="text/javascript" src="angular.js"></script>
+    <script type="text/javascript" src="browserify_emitter_output.js">
+    </script>
+  </body>
+</html>

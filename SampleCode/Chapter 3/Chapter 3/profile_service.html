@@ -1,0 +1,44 @@
+<html ng-app="app">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="ProfileController">
+      <input type="text" ng-model="profile.user.name">
+      <h2 ng-show="!profile.isValid()">
+        Username required
+      </h2>
+    </div>
+
+    <script type="text/javascript" src="angular.js">
+    </script>
+    <script type="text/javascript">
+      var app = angular.module('app', []);
+
+      app.factory('userService', function($timeout) {
+        var user = {};
+        $timeout(function() {
+          user.name = 'Username';
+        }, 500);
+
+        return user;
+      });
+
+      app.factory('profileService', function(userService) {
+        var ret = {
+          user: userService,
+          isValid: function() {
+            return ret.user && ret.user.name;
+          }
+        };
+
+        return ret;
+      });
+
+      app.controller('ProfileController', function($scope, profileService) {
+        $scope.profile = profileService;
+      });
+    </script>
+  </body>
+</html>

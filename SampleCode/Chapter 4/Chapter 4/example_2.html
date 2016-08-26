@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Your first directive</title>
+    <script src="angular.js">
+    </script>
+    <script type="application/javascript">
+        angular.
+            module('MyApp', []);
+    </script>
+</head>
+
+<body>
+    <div ng-controller="HelloController">
+        <input type="text" id="username" ng-model="username">
+        <div>
+            Hello,
+            <span id="display_username">
+                {{ username }}
+            </span>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function HelloController($scope) {
+            $scope.username = "";
+        }
+    </script>
+</body>
+
+</html>

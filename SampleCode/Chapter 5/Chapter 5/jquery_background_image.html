@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery directive</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script type="application/javascript">
+        var image = 'http://upload.wikimedia.org/wikipedia/commons/c/ca/AngularJS_logo.svg';
+
+        $(document).ready(function() {
+            $('div[my-background-image]').each(function(i, el) {
+                $(el).css({
+                  'background-image': 'url(' + eval($(el).attr('my-background-image')) +')',
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div my-background-image="image" style="width: 700px; height: 180px"></div>
+</body>
+
+</html>

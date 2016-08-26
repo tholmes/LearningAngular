@@ -1,0 +1,59 @@
+<html ng-app="myApp">
+  <head>
+    <script type="text/javascript"
+            src="angular.js">
+    </script>
+    <script type="text/javascript"
+            src="firebase.js">
+    </script>
+    <script type="text/javascript"
+            src="angularfire.js">
+    </script>
+    <script type="text/javascript">
+      angular.module('myApp', ['firebase']);
+
+      function FirebaseController($scope, $window, $firebase) {
+        $scope.messages = [];
+        $scope.name = 'TestConnection';
+        $scope.message = 'Test message';
+
+        var firebase = new $window.Firebase(
+          'https://<name>.firebaseio.com/'); // Firebase Data URL here
+        var sync = $firebase(firebase);
+        
+        $scope.messages = sync.$asArray();
+
+        $scope.sendMessage = function() {
+          $scope.messages.$add({
+            name: $scope.name,
+            message: $scope.message
+          });
+
+          $scope.message = '';
+        };
+      }
+    </script>
+  </head>
+
+  <body>
+    <div ng-controller="TestController">
+      <hr>
+      Your Name: <input type="text" ng-model="name">
+      <br>
+      Message to Send:<br>
+      <textarea ng-model="message">
+      </textarea>
+      <button ng-click="sendMessage()">
+        Send Message
+      </button>
+      <hr>
+      <h1>Messages</h1>
+      <div ng-repeat="message in messages">
+        <em>From: {{message.name}}</em>
+        <br>
+        {{message.message}}
+        <br><br>
+      </div>
+    </div>
+  </body>
+</html>

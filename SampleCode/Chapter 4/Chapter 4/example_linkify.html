@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Your first directive</title>
+    <script src="angular.js">
+    </script>
+    <script type="application/javascript">
+        var module = angular.
+            module('MyApp', []);
+    </script>
+</head>
+
+<body>
+    <div>
+        <h1>Using ngBind</h1>
+        <span ng-bind="'Go to http://www.google.com to search' | linkify">
+        </span>
+    </div>
+
+    <script type="text/javascript">
+        module.filter('linkify', function() {
+            return function(str) {
+                return str.replace(/(http:\/\/\S+)/ig, function(match) {
+                    return "<a href='" + match + "'>" + match + "</a>";
+                });
+            };
+        });
+    </script>
+</body>
+
+</html>

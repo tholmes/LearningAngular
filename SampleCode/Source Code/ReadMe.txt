@@ -1,0 +1,1 @@
+These files contain the source code for examples in Wrox Professional AngularJS. The source code is provided for your convenience only. The source code is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. The code is organized into various folders, each folder corresponding to a chapter in the book. 

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Swipe Carousel</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script src="hammer.1.0.10.js">
+    </script>
+    <script src="jquery.hammer.1.0.10.js">
+    </script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js">
+    </script>
+    <script type="application/javascript">
+        var module = angular.
+            module('MyApp', []);
+
+        var ANGULARJS_LOGO_URL = "http://upload.wikimedia.org/wikipedia/commons/c/ca/AngularJS_logo.svg";
+        var GOOGLE_LOGO_URL = "http://upload.wikimedia.org/wikipedia/commons/a/aa/Logo_Google_2013_Official.svg";
+        var JQUERY_LOGO_URL = "http://upload.wikimedia.org/wikipedia/en/9/9e/JQuery_logo.svg";
+
+        module.directive('myBackgroundImage', function() {
+            return function(scope, element, attributes) {
+                scope.$watch(attributes.myBackgroundImage, function(newVal, oldVal) {
+                    element.css('background-image', 'url(' + newVal + ')');
+                });
+            };
+        });
+
+        module.directive('ngSwipeLeft', function() {
+            return function(scope, element, attributes) {
+                Hammer(element).on('swipeleft', function() {
+                    scope.$eval(attributes.ngSwipeLeft);
+                    scope.$apply();
+                });
+            };
+        });
+
+        module.directive('ngSwipeRight', function() {
+            return function(scope, element, attributes) {
+                Hammer(element).on('swiperight', function() {
+                    scope.$eval(attributes.ngSwipeRight);
+                    scope.$apply();
+                });
+            };
+        });
+
+        module.directive('toggleButton', function() {
+            return function(scope, element, attributes) {
+                scope.$watch(attributes.toggleButton, function(v) {
+                    element.val(!v ? 'Disable' : 'Enable');
+                });
+
+                element.click(function() {
+                    scope[attributes.toggleButton] =
+                        !scope[attributes.toggleButton];
+                    scope.$apply();
+                });
+            };
+        });
+
+        function CarouselController($scope) {
+            $scope.currentIndex = 0;
+
+            $scope.next = function() {
+                $scope.currentIndex =
+                    ($scope.currentIndex + 1) % $scope.images.length;
+            };
+
+            $scope.previous = function() {
+                $scope.currentIndex = $scope.currentIndex == 0 ?
+                    $scope.images.length - 1 :
+                    $scope.currentIndex - 1;
+            };
+
+            $scope.disabled = false;
+
+            setInterval(function() {
+                if ($scope.disabled) {
+                    return;
+                }
+                $scope.next();
+                $scope.$apply();
+            }, 2000);
+        }
+
+        module.directive('imageCarousel', function() {
+            return {
+                template:
+                    '<div   my-background-image="images[currentIndex]"' +
+                    '       ng-swipe-left="next()"' +
+                    '       ng-swipe-right="previous()"' +
+                    '       style="height: 120px; width: 600px; border: 1px solid red">' +
+                    '</div>' +
+                    '<input type="button" toggle-button="disabled">' +
+                    '<h1>Image index: {{currentIndex}}</h1>',
+                controller : CarouselController,
+                scope : true,
+                link : function(scope, element, attributes) {
+                    scope.$parent.$watch(attributes.imageCarousel, function(v) {
+                        scope.images = v;
+                    });
+                }
+            }
+        });
+
+        function BodyController($scope, $window) {
+            $scope.defaultImages = [
+                ANGULARJS_LOGO_URL,
+                GOOGLE_LOGO_URL,
+                JQUERY_LOGO_URL
+            ];
+
+            $scope.otherImages = [
+                GOOGLE_LOGO_URL
+            ];
+
+            $scope.window = $window;
+        }
+    </script>
+</head>
+
+<body ng-controller="BodyController">
+    <div image-carousel="defaultImages"></div>
+    <div image-carousel="otherImages"></div>
+</body>
+
+</html>

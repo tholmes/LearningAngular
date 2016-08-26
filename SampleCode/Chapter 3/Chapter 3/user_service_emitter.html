@@ -1,0 +1,59 @@
+<html ng-app="app">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="ProfileController">
+      <h1 ng-show="!profile.error">{{user.name}}</h1>
+      <h2 ng-show="profile.error">{{profile.error}}</h2>
+    </div>
+
+    <script type="text/javascript" src="angular.js">
+    </script>
+    <script type="text/javascript" src="event-emitter.js">
+    </script>
+    <script type="text/javascript">
+      var app = angular.module('app', []);
+
+      app.factory('userService', function($timeout, $window) {
+        var emitter = $window.emitter();
+
+        var user = {};
+        $timeout(function() {
+          // Simulate an HTTP error
+          user.emit('error', 'Could not connect to server');
+        }, 2000);
+
+        ['on', 'once', 'emit'].forEach(function(fn) {
+          user[fn] = function() {
+            emitter[fn].apply(emitter, arguments);
+          };
+        });
+
+        return user;
+      });
+
+      app.factory('profileService', function(userService) {
+        var ret = {
+          user: userService,
+          isValid: function() {
+            return ret.user && ret.user.name;
+          }
+        };
+
+        userService.on('error', function(error) {
+          ret.error = 'This is a sample error message ' +
+            'that would tell the user that you can\'t ' +
+            'connect to the server';
+        });
+
+        return ret;
+      });
+
+      app.controller('ProfileController', function($scope, profileService) {
+        $scope.profile = profileService;
+      });
+    </script>
+  </body>
+</html>

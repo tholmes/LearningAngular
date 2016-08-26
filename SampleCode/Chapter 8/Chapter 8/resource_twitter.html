@@ -1,0 +1,92 @@
+<html ng-app="myApp">
+  <script type="text/javascript" src="angular.js">
+  </script>
+  <script type="text/javascript" src="angular-resource.js">
+  </script>
+
+  <script type="text/javascript">
+    var m = angular.module('myApp', ['ngResource']);
+
+    m.service('tweetService', function($resource) {
+      return $resource('/statuses/',
+        {},
+        {
+          retweets: {
+            method: 'GET',
+            url: '/statuses/retweets/:id',
+            isArray: true
+          },
+          show: {
+            method: 'GET',
+            url: '/statuses/show/:id'
+          },
+          destroy: {
+            method: 'POST',
+            url: '/statuses/destroy/:id',
+            params: {
+              id: '@id'
+            }
+          },
+          update: {
+            method: 'POST',
+            url: '/statuses/update/:id',
+            params: {
+              id: '@id'
+            }
+          },
+          retweet: {
+            method: 'POST',
+            url: '/statuses/retweet/:id',
+            params: {
+              id: '@id'
+            }
+          }
+        });
+    });
+
+    m.controller('tweetController', function($scope, tweetService) {
+      $scope.load = function() {
+        $scope.tweet = tweetService.show({ id: '123456' }, function() {
+        });
+      };
+
+      $scope.loadRetweets = function() {
+        $scope.retweets = tweetService.retweets({ id: '123456' },
+          function() {});
+      };
+    });
+  </script>
+
+  <body ng-controller="tweetController">
+    <h1>Tweet Id: {{tweet.id}}</h1>
+    Message: {{tweet.status}}
+    <br>
+    Retweets: {{retweets.length}}
+    <hr>
+    Resource methods:
+    <br>
+    <button ng-click="load()">
+      Load Tweet "123456"
+    </button>
+    <br><br>
+    <button ng-click="loadRetweets()">
+      Load Retweets
+    </button>
+    <br><br>
+    <div ng-show="tweet">
+      <h2>Instance Methods</h2>
+      <button ng-click="tweet.$destroy()">
+        Delete
+      </button>
+      <br><br>
+      <input type="text" ng-model="tweet.status">
+      <button ng-click="tweet.$update()">
+        Update Status
+      </button>
+      <br><br>
+      <button ng-click="tweet.$retweet()">
+        Retweet
+      </button>
+    </div>
+  </body>
+</html>

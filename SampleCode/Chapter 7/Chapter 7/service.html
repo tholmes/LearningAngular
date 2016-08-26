@@ -1,0 +1,67 @@
+<html ng-app="chapter7Module">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="MyController">
+      <h1 ng-repeat="quote in stocks.quotes">
+        {{quote.Symbol}}: {{quote.Ask}}
+      </h1>
+      <span style="background-color: green" ng-click="stocks.getMore()">
+        Load More
+      </div>
+    </div>
+
+    <script type="text/javascript" src="angular.js"></script>
+    <script type="text/javascript">
+      var chapter7Module = angular.module('chapter7Module', []);
+      
+      chapter7Module.service('$stocks', function($http) {
+        var BASE = 'http://query.yahooapis.com/v1/public/yql'
+        var _this = this;
+
+        var stocks = [
+          'GOOG', // Google
+          'AAPL', // Apple
+          'MSFT', // Microsoft
+          'YHOO', // Yahoo
+          'FB',   // Facebook
+          'AMZN', // Amazon
+          'EBAY', // Ebay
+          'ADBE', // Adobe
+          'CSCO', // Cisco
+          'QCOM', // Qualcomm
+          'INTC'  // Intel
+        ];
+
+        var load = function(stocks) {
+          var query = encodeURIComponent('select * from yahoo.finance.quotes where symbol in (\'' + stocks.join(',') + '\')');
+          var url = BASE + '?' + 'q=' + query + '&format=json&diagnostics=true&env=http://datatables.org/alltables.env';
+
+          $http.jsonp(url + '&callback=JSON_CALLBACK').
+            success(function(data) {
+              if (data.query.count) {
+                var quotes = data.query.count > 1 ? data.query.results.quote : [data.query.results.quote];
+                _this.quotes = _this.quotes.concat(quotes);
+              }
+            }).
+            error(function(data) {
+              console.log(data);
+            });
+        };
+        
+        this.quotes = [];
+        this.getMore = function() {
+          load(stocks.slice(this.quotes.length, this.quotes.length + 5));
+        };
+
+        this.getMore();
+      });
+
+      function MyController($scope, $stocks) {
+        $scope.stocks = $stocks;
+      }
+    </script>
+  </body>
+</html>

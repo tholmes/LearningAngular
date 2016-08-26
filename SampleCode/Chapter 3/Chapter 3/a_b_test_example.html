@@ -1,0 +1,99 @@
+<html ng-app="myApp">
+  <head>
+
+    <script type="text/javascript" src="angular.js"></script>
+    <script src="https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js" 
+            type="text/javascript">
+    </script>
+
+    <script type="text/ng-template" id="/registration/a">
+      <h1>Registration Variant A</h1>
+      <h3>Please Enter Your Email:</h3>
+      <input type="text" ng-model="email">
+      <br>
+      <input type="button" ng-click="submit()" value="Submit">
+      <h4 ng-show="registered">
+        Thanks for Registering!
+      </h4>
+    </script>
+
+    <script type="text/ng-template" id="/registration/b">
+      <h1>Registration Variant B</h1>
+      <input type="text" ng-model="email" placeholder="Email">
+      <br>
+      <input type="button" ng-click="submit()" value="Register">
+      <h4 ng-show="inProgress">
+        Registering...
+      </h4>
+      <h4 ng-show="registered">
+        Thanks for Registering!
+      </h4>
+    </script>
+
+    <script type="text/javascript">
+      var keenClient = new Keen({
+        projectId: 'insert your project id here',
+        writeKey: 'insert your write key here'
+      });
+
+      var abTest = angular.module('abTestRegistration', []);
+      abTest.value('abTestCollection', 'registration_AB_test_20141112');
+
+      var registrationModuleA = angular.module('registrationA',
+        ['abTestRegistration']);
+
+      registrationModuleA.controller('RegistrationController',
+        function($scope, $window, $timeout, abTestCollection) {
+          keenClient.addEvent(abTestCollection, {
+            type: 'view',
+            variant: 'A'
+          });
+
+          $scope.useTemplate = '/registration/a';
+
+          $scope.submit = function() {
+            $timeout(function() {
+              $scope.registered = true;
+              keenClient.addEvent(abTestCollection, {
+                type: 'registered',
+                variant: 'A'
+              });
+            }, 1000);
+          };
+        });
+
+      var registrationModuleB = angular.module('registrationB',
+        ['abTestRegistration']);
+
+      registrationModuleB.controller('RegistrationController',
+        function($scope, $window, $timeout, abTestCollection) {
+          keenClient.addEvent(abTestCollection, {
+            type: 'view',
+            variant: 'B'
+          });
+          $scope.useTemplate = '/registration/b';
+
+          $scope.submit = function() {
+            $scope.inProgress = true;
+            $timeout(function() {
+              $scope.inProgress = false;
+              $scope.registered = true;
+              keenClient.addEvent(abTestCollection, {
+                type: 'registered',
+                variant: 'B'
+              });
+            }, 1000);
+          };
+        });
+
+      var myModule = angular.module('myApp',
+        [(Math.random() >= 0.5 ? 'registrationB' : 'registrationA')]);
+
+    </script>
+  </head>
+
+  <body>
+    <div ng-controller="RegistrationController" ng-include="useTemplate">
+    </div>
+  </body>
+</html>

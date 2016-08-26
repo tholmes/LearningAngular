@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <script type="text/javascript" src="mongoose.js">
+    </script>
+    <script type="text/javascript">
+      // Create a new Mongoose schema
+      var schema = new mongoose.Schema({
+        name: {
+          first: String,
+          last: String
+        },
+        email: {
+          type: String,
+          // Email needs to match given RegExp
+          match: /.+@.+\..+/,
+          // Email must be specified
+          required: true
+        },
+        favoriteColor: {
+          type: String,
+          // Favorite color needs to be one of the enumerated
+          // values
+          enum: ['Red', 'Green', 'Blue']
+        },
+        age: {
+          type: Number,
+          // Age must be at least 21
+          min: 21
+        }
+      });
+
+      // `fullName` is a virtual: a pseudo-property composed of
+      // other properties. When you assign a value to 'fullName',
+      // it will split it up and set name.first and name.last
+      schema.
+        virtual('fullName').
+        get(function() {
+          return this.name.first + ' ' + this.name.last;
+        }).
+        set(function(v) {
+          var s = v.split(' ');
+          this.set('name.first', s[0]);
+          this.set('name.last', s[1]);
+        });
+
+      // Create a new empty document with schema
+      var doc1 = new mongoose.Document({}, schema);
+
+      doc1.name = {
+        first: 'James',
+        last: 'Madison'
+      };
+
+      // 'James Madison'
+      console.log(doc1.fullName);
+
+      doc1.fullName = 'Thomas Jefferson';
+      // 'Thomas'
+      console.log(doc1.name.first);
+    </script>
+  </head>
+</html>

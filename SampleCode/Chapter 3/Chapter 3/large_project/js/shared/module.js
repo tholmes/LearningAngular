@@ -1,0 +1,1 @@
+angular.module('foo.shared', ['foo.shared.services']);

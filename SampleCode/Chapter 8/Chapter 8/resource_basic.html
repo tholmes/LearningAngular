@@ -1,0 +1,28 @@
+<html ng-app="myApp">
+  <script type="text/javascript" src="angular.js">
+  </script>
+  <script type="text/javascript" src="angular-resource.js">
+  </script>
+
+  <script type="text/javascript">
+    var m = angular.module('myApp', ['ngResource']);
+
+    m.service('tweetService', function($resource) {
+      return $resource('/tweets/:id',
+        {},
+        {
+          load: { method: 'GET' }
+        });
+    });
+
+    m.controller('tweetController', function(tweetService) {
+      // This performs an HTTP request: GET /tweets/123
+      var tweet = tweetService.load({ id: '123' }, function() {
+        console.log(JSON.stringify(tweet));
+      });
+    });
+  </script>
+
+  <body ng-controller="tweetController">
+  </body>
+</html>

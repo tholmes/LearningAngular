@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Your first directive</title>
+    <script src="angular.js">
+    </script>
+    <script type="application/javascript">
+        var module = angular.
+            module('MyApp', []);
+    </script>
+</head>
+
+<body>
+    <div ng-controller="RequestsController">
+        <div ng-repeat="request in (requests | filter:{'done':false} | orderBy:'-time' | limitTo:10)">
+            {{ request.name }}
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function RequestsController($scope) {
+            $scope.requests = [];
+            for (var i = 0; i < 50; ++i) {
+                $scope.requests.push({
+                    done : (i % 3 == 0),
+                    name : "" + i,
+                    time : (i - 25) * (i - 25)
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>

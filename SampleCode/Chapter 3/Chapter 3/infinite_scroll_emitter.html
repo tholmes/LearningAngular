@@ -1,0 +1,64 @@
+<html ng-app="app">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="InfiniteScrollController">
+      <div ng-repeat="image in images">
+        <img ng-src="{{image.url}}">
+      </div>
+    </div>
+
+    <script type="text/javascript" src="jquery-1.11.1.js">
+    </script>
+    <script type="text/javascript" src="angular.js">
+    </script>
+    <script type="text/javascript">
+      var app = angular.module('app', []);
+
+      app.controller('InfiniteScrollController', function($scope) {
+        $scope.images = [];
+        var CYCLE_IMAGES = [
+          'http://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/AngularJS_logo.svg/695px-AngularJS_logo.svg.png',
+          'http://upload.wikimedia.org/wikipedia/en/thumb/9/9e/JQuery_logo.svg/524px-JQuery_logo.svg.png',
+          'http://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/512px-Unofficial_JavaScript_logo_2.svg.png',
+          'http://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Wiley_logo.svg/1125px-Wiley_logo.svg.png'
+        ];
+
+        $scope.$on('SCROLL_TO_BOTTOM', function() {
+          for (var i = 0; i < 3; ++i) {
+            $scope.images.push({
+              url: CYCLE_IMAGES[$scope.images.length % CYCLE_IMAGES.length]
+            });
+          }
+          $scope.$apply();
+        });
+      });
+
+      app.run(function($rootScope) {
+        var lastCheck = 0;
+        var INTERVAL_TO_CHECK = 500; // Only check every half second
+
+        var check = function() {
+          if (Date.now() - lastCheck < INTERVAL_TO_CHECK) {
+            return;
+          }
+
+          lastCheck = Date.now();
+
+          if ($(window).scrollTop() >=
+              $(document).height() - $(window).height() - 50) {
+            $rootScope.$broadcast('SCROLL_TO_BOTTOM');
+          }
+        }
+
+        setTimeout(function() {
+          check();
+        }, 0);
+        $(window).on('scroll', check);
+        $(window).on('resize', check);
+      });
+    </script>
+  </body>
+</html>

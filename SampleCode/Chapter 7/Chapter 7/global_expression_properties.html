@@ -1,0 +1,31 @@
+<html ng-app="chapter7Module">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="MyController">
+      {{ encodeURIComponent(stringToEncode) }}
+    </div>
+
+    <script type="text/javascript" src="angular.js"></script>
+    <script type="text/javascript">
+      var chapter7Module = angular.module('chapter7Module', []);
+      
+      chapter7Module.config(function($rootScopeProvider) {
+        var oldGet = $rootScopeProvider.$get;
+        $rootScopeProvider.$get = function($injector) {
+          var rootScope = $injector.invoke(oldGet);
+
+          rootScope.encodeURIComponent = encodeURIComponent;
+          rootScope.stringToEncode = 'A, B, & C';
+
+          return rootScope;
+        };
+      });
+
+      function MyController($scope) {
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<html ng-app="myApp">
+  <script type="text/javascript" src="angular.js">
+  </script>
+
+  <script type="text/javascript">
+    var m = angular.module('myApp', []);
+
+    m.factory('userService', function($q, $rootScope) {
+      var password = '';
+
+      var service = {
+        getAuthorization: function() {
+          return password;
+        },
+        authenticate: function() {
+          var promise = $q.defer();
+
+          $rootScope.promptForPassword = true;
+          $rootScope.submitPassword = function(pwd) {
+            $rootScope.promptForPassword = false;
+            password = pwd;
+            promise.resolve(pwd);
+          };
+
+          return promise.promise;
+        }
+      };
+
+      return service;
+    });
+
+    m.config(function($httpProvider) {
+      $httpProvider.interceptors.push(function($q, $injector, userService) {
+        return {
+          request: function(request) {
+            request.headers.authorization =
+              userService.getAuthorization();
+            return request;
+          },
+          response: function(response) {
+            response.data.status = response.status;
+            return response;
+          },
+          responseError: function(rejection) {
+            if (rejection.status === 401) { // Unauthorized
+              console.log('Rejected because unauthorized with password ' +
+                userService.getAuthorization());
+
+              return userService.authenticate().then(function() {
+                return $injector.get('$http')(rejection.config);
+              });
+            }
+
+            return $q.reject(rejection);
+          }
+        }
+      });
+    });
+
+    m.controller('httpController', function($scope, $http) {
+      $http.post('/save').success(function(data) {
+        console.log(JSON.stringify(data));
+        $scope.data = data;
+      });
+    });
+  </script>
+
+  <body ng-controller="httpController">
+    <h1>Response Status: {{data.status}}</h1>
+
+    <div ng-if="promptForPassword">
+      <hr>
+      <h2>Please Enter the Password</h2>
+      <form ng-submit="submitPassword(password)">
+        <input type="text" ng-model="password">
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "Chapter_3",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "browserify": "6.3.2",
+    "event-emitter": "0.3.1"
+  }
+}

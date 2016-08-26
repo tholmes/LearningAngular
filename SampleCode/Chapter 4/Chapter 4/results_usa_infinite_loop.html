@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Hardcoding Array Order With Filters</title>
+    <script src="angular.js">
+    </script>
+    <script type="application/javascript">
+        var module = angular.
+            module('MyApp', []);
+    </script>
+</head>
+
+<body>
+    <div ng-controller="CountriesController">
+        <div ng-repeat="country in countries | lift:'name'">
+            {{ country.name }}
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function CountriesController($scope) {
+            $scope.countries = [
+                "Germany",
+                "Australia",
+                "Norway",
+                "USA",
+                "Sweden",
+                "Austria"
+            ];
+        }
+
+        module.filter('lift', function() {
+            return function(arr, field) {
+                var ret = [];
+                for (var i = 0; i < arr.length; ++i) {
+                    var newEl = {};
+                    newEl[field] = arr[i];
+                    ret.push(newEl);
+                }
+
+                return ret;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+<html ng-app="myApp">
+  <head>
+    <script type="text/javascript" src="angular.js">
+    </script>
+    <script type="text/javascript" src="setImmediate.js">
+    </script>
+    <script type="text/javascript" src="co.js">
+    </script>
+    <script type="text/javascript">
+      var app = angular.module('myApp', []);
+
+      function convertToAPlusPromise($q, promise) {
+        var deferred = $q.defer();
+        promise.
+          success(function(data) {
+            deferred.resolve(data);
+          }).
+          error(function(err) {
+            deferred.reject(err);
+          });
+
+        return deferred.promise;
+      }
+
+      function MyController($scope, $http, $q) {
+        var BASE = 'http://query.yahooapis.com/v1/public/yql';
+        var query = 'select * from yahoo.finance.quotes ' +
+          'where symbol in (\'GOOG\')';
+        var url = BASE + '?' +
+          'q=' + encodeURIComponent(query) +
+          '&format=json&diagnostics=true' +
+          '&env=http://datatables.org/alltables.env' +
+          '&callback=JSON_CALLBACK';
+
+        co(function*() { // The * is not a typo, marks this as a generator
+          var result;
+          try {
+            result = yield convertToAPlusPromise($q, $http.jsonp(url));
+            $scope.result = result;
+          } catch(e) {
+            console.log('Error occurred: ' + e);
+          }
+        })();
+      }
+    </script>
+  </head>
+
+  <body ng-controller="MyController">
+    <h1>
+      Google Stock Price: {{ result.query.results.quote.Ask }}
+    </h1>
+  </body>
+</html>

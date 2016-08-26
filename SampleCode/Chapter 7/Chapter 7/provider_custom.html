@@ -1,0 +1,21 @@
+<html ng-app="chapter7Module">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="MyController">
+      <h1>Google Stock Price: {{price.quotes[0].Ask}}</h1>
+    </div>
+
+    <script type="text/javascript" src="angular.js"></script>
+    <script type="text/javascript" src="provider.js"></script>
+    <script type="text/javascript">
+      chapter7Module.config(function($googleStockProvider) {
+        $googleStockProvider.$get = function() {
+          return { quotes: [{ Ask: 100 }] };
+        };
+      });
+    </script>
+  </body>
+</html>

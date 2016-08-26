@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>Batch Add Example - Getter / Setter</title>
+    <script src="angular.js">
+    </script>
+    <script type="application/javascript">
+        angular.
+            module('MyApp', []).
+            directive('myBackgroundImage', function () {
+                return function (scope, element, attrs) {
+                    element.css({
+                        'background-image': 'url(' + attrs.myBackgroundImage + ')',
+                        'background-size': 'cover',
+                        'background-repeat': 'no-repeat',
+                        'background-position': 'center center'
+                    });
+                };
+            });
+    </script>
+</head>
+
+<body>
+    <div my-background-image="http://angularjs.org/img/AngularJS-large.png" style="width: 350px; height: 100px"></div>
+</body>
+
+</html>

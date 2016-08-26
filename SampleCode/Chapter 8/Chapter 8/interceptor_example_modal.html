@@ -1,0 +1,101 @@
+<html ng-app="myApp">
+  <link rel="stylesheet" href="bootstrap.css">
+
+  <script type="text/javascript"
+          src="jquery-1.11.1.js">
+  </script>
+  <script type="text/javascript"
+          src="bootstrap.js">
+  </script>
+  <script type="text/javascript"
+          src="angular.js">
+  </script>
+  <script type="text/javascript"
+          src="ui-bootstrap-tpls-0.11.2.js">
+  </script>
+
+  <script type="text/javascript">
+    var m = angular.module('myApp', ['ui.bootstrap']);
+
+    m.factory('userService', function($q, $injector) {
+      var password = '';
+
+      var service = {
+        getAuthorization: function() {
+          return password;
+        },
+        authenticate: function() {
+          var $modal = $injector.get('$modal');
+
+          var modal = $modal.open({
+            template: '<div style="padding: 15px">' +
+                      '  <input type="password" ng-model="pwd">' +
+                      '  <button ng-click="submit(pwd)">' +
+                      '    Submit' +
+                      '  </button>' +
+                      '</div>',
+            controller: function($scope, $modalInstance) {
+              $scope.submit = function(pwd) {
+                $modalInstance.close(pwd);
+              };
+            }
+          });
+
+          return modal.result.then(function(pwd) {
+            password = pwd;
+          });
+        }
+      };
+
+      return service;
+    });
+
+    m.config(function($httpProvider) {
+      $httpProvider.interceptors.push(function($q, $injector, userService) {
+        return {
+          request: function(request) {
+            request.headers.authorization =
+              userService.getAuthorization();
+            return request;
+          },
+          response: function(response) {
+            response.data.status = response.status;
+            return response;
+          },
+          responseError: function(rejection) {
+            if (rejection.status === 401) { // Unauthorized
+              console.log('Rejected because unauthorized with password ' +
+                userService.getAuthorization());
+
+              return userService.authenticate().then(function() {
+                return $injector.get('$http')(rejection.config);
+              });
+            }
+
+            return $q.reject(rejection);
+          }
+        }
+      });
+    });
+
+    m.controller('httpController', function($scope, $http) {
+      $http.post('/save').success(function(data) {
+        console.log(JSON.stringify(data));
+        $scope.data = data;
+      });
+    });
+  </script>
+
+  <body ng-controller="httpController">
+    <h1>Response Status: {{data.status}}</h1>
+
+    <div ng-if="promptForPassword">
+      <hr>
+      <h2>Please Enter the Password</h2>
+      <form ng-submit="submitPassword(password)">
+        <input type="text" ng-model="password">
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+  </body>
+</html>

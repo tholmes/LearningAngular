@@ -1,0 +1,37 @@
+<html ng-app="app">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="FirstController">
+      <h1>{{user.name}}</h1>
+    </div>
+    <div ng-controller="SecondController">
+      <input type="text" ng-model="user.name">
+    </div>
+
+    <script type="text/javascript" src="angular.js">
+    </script>
+    <script type="text/javascript">
+      var app = angular.module('app', []);
+
+      app.factory('userService', function($timeout) {
+        var user = {};
+        $timeout(function() {
+          user.name = 'Username';
+        }, 500);
+
+        return user;
+      });
+
+      app.controller('FirstController', function($scope, userService) {
+        $scope.user = userService;
+      });
+
+      app.controller('SecondController', function($scope, userService) {
+        $scope.user = userService;
+      });
+    </script>
+  </body>
+</html>

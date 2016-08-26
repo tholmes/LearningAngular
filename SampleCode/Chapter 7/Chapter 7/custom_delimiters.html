@@ -1,0 +1,30 @@
+<html ng-app="myModule">
+  <head>
+    <title></title>
+  </head>
+
+  <body>
+    <div ng-controller="MyController">
+      <h1>
+        This app uses
+        <em>[[delimiter]]</em>
+        as interpolation delimiters
+      </h1>
+    </div>
+
+    <script type="text/javascript" src="angular.js"></script>
+    <script type="text/javascript">
+      var myModule = angular.module('myModule', []);
+
+      myModule.config(function($interpolateProvider) {
+        $interpolateProvider.startSymbol('[[');
+        $interpolateProvider.endSymbol(']]');
+      });
+
+
+      function MyController($scope) {
+        $scope.delimiter = 'square braces';
+      }
+    </script>
+  </body>
+</html>

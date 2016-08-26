@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+    <title>MyBackgroundImage directive</title>
+    <script src="https:////ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js">
+    </script>
+    <script type="application/javascript">
+        var module = angular.
+            module('MyApp', []);
+
+        module.directive('myBackgroundImage', function() {
+            return function(scope, element, attributes) {
+                scope.$watch(attributes.myBackgroundImage, function(newVal, oldVal) {
+                    element.css('background-image', 'url(' + newVal + ')');
+                });
+            };
+        });
+    </script>
+</head>
+
+<body ng-init="image = 'http://upload.wikimedia.org/wikipedia/commons/a/aa/Logo_Google_2013_Official.svg';">
+    <div style="height: 180px; width: 840px; border: 1px solid red" my-background-image="image">
+    </div>
+</body>
+
+</html>

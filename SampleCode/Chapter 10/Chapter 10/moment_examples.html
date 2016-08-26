@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <script type="text/javascript" src="moment.js">
+    </script>
+    <script type="text/javascript" src="moment-timezone.js">
+    </script>
+    <script type="text/javascript">
+      // Moment representing current date
+      moment();
+
+      // Midnight GMT on June 1, 2011, in browser's timezone
+      moment('2011-06-01T00:00:00.000Z');
+
+      // Midnight GMT on June 1, 2011, in UTC
+      moment('2011-06-01T00:00:00.000Z').utc();
+
+      // Format: String representing June 1, 2011 12:00am GMT in browser's
+      // timezone. For example, will print 'May 31, 2011 8:00pm'
+      // in New York.
+      moment('2011-06-01T:00:00:00.000Z').
+        format('MMMM D, YYYY h:ma');
+
+      // Format: Print out 'June 1, 2011 12:00am', because UTC
+      moment('2011-06-01T00:00:00.000Z').
+        utc().
+        format('MMMM D, YYYY h:mma');
+
+      // Add 42 days to 2011-06-01 (2011-07-13)
+      moment('2011-06-01T00:00:00.000Z').
+        utc().
+        add(42, 'days').
+        format('MMMM D, YYYY h:mma');
+
+      // June 1, 2011 12:00am GMT in Los Angeles time (May 31, 2011 5:00pm)
+      moment('2011-06-01T00:00:00.000Z').
+        tz('America/Los_Angeles').
+        format('MMMM D, YYYY h:mma');
+
+      // Plain old JavaScript date object representing a moment
+      moment('2011-06-01T00:00:00.000Z').toDate();
+
+      // Current Unix timestamp (milliseconds since Jan 1, 1970 12:00am UTC)
+      moment().unix();
+    </script>
+  </head>
+</html>
