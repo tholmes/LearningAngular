@@ -19,10 +19,8 @@
           <p>Looks like you haven't added any stocks to this watchlist yet!</p>
           <p>Do so now by clicking the <span class="glyphicon-plus"></span> located above.</p>
         </div>
-        <!-- [1] loop over all stocks and display company symbols -->
-        <p ng-repeat="stock in stocks">
-          {{ stock.company.symbol }}
-        </p>
+        <!-- [1] Render entire interactive table -->
+          <stk-stock-table ng-show="stocks.length" watchlist="watchlist">
       </div>
     </div>
   </div>

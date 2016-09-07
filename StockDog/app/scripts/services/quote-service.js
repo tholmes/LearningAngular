@@ -15,7 +15,6 @@ angular.module("stockDogApp")
 
     // [1] Handles updating stock model with appropriate data from Quote
     var update = function (quotes) {
-      console.log(quotes);
       if (quotes.length === stocks.length) {
         _.each(quotes, function (quote, idx) {
           var stock = stocks[idx];
